@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useState } from "react";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
@@ -16,6 +17,215 @@ const stagger = {
     }
   }
 };
+
+const plans = [
+  {
+    name: "Starter",
+    monthlyPrice: 19900,
+    yearlyPrice: 14900,
+    description: "Для микробизнеса",
+    features: [
+      "До 500 клиентов",
+      "Бонусная система",
+      "1 локация",
+      "Базовая аналитика",
+      "Email поддержка",
+    ],
+    popular: false,
+  },
+  {
+    name: "Growth",
+    monthlyPrice: 49900,
+    yearlyPrice: 37400,
+    description: "Для малого бизнеса",
+    features: [
+      "До 3 000 клиентов",
+      "WhatsApp рассылки",
+      "Бонусы на день рождения",
+      "3 локации",
+      "Приоритетная поддержка",
+    ],
+    popular: false,
+  },
+  {
+    name: "Business",
+    monthlyPrice: 99900,
+    yearlyPrice: 74900,
+    description: "Самый популярный",
+    features: [
+      "До 15 000 клиентов",
+      "RFM-аналитика с AI",
+      "WhatsApp + авторассылки",
+      "До 10 локаций",
+      "API доступ",
+      "Персональный менеджер",
+    ],
+    popular: true,
+  },
+  {
+    name: "Enterprise",
+    monthlyPrice: 0,
+    yearlyPrice: 0,
+    description: "Для сетей и франшиз",
+    features: [
+      "Безлимит клиентов",
+      "Безлимит локаций",
+      "White-label решение",
+      "Custom интеграции",
+      "SLA 99.9%",
+      "Выделенная поддержка 24/7",
+    ],
+    popular: false,
+  },
+];
+
+function PricingSection() {
+  const [isYearly, setIsYearly] = useState(true);
+
+  const formatPrice = (price: number) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
+
+  return (
+    <section id="тарифы" className="py-32 px-6">
+      <div className="max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <span className="inline-block px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-sm mb-6">
+            Тарифы
+          </span>
+          <h2 className="text-4xl sm:text-5xl font-bold mb-6">
+            Прозрачное{" "}
+            <span className="gradient-text">ценообразование</span>
+          </h2>
+          <p className="text-xl text-zinc-500 mb-10">
+            14 дней бесплатно. Отмена в любой момент.
+          </p>
+
+          {/* Billing Toggle */}
+          <div className="flex items-center justify-center gap-4">
+            <span className={`text-sm transition-colors ${!isYearly ? "text-white" : "text-zinc-500"}`}>
+              Помесячно
+            </span>
+            <button
+              onClick={() => setIsYearly(!isYearly)}
+              className="relative w-16 h-8 rounded-full bg-zinc-800 transition-colors hover:bg-zinc-700"
+            >
+              <motion.div
+                className="absolute top-1 w-6 h-6 rounded-full bg-gradient-to-r from-violet-500 to-indigo-500"
+                animate={{ left: isYearly ? "calc(100% - 28px)" : "4px" }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              />
+            </button>
+            <span className={`text-sm transition-colors ${isYearly ? "text-white" : "text-zinc-500"}`}>
+              Годовой
+            </span>
+            {isYearly && (
+              <motion.span
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="px-3 py-1 bg-green-500/20 text-green-400 text-sm font-medium rounded-full"
+              >
+                -25%
+              </motion.span>
+            )}
+          </div>
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {plans.map((plan, i) => (
+            <motion.div
+              key={plan.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className={`relative rounded-3xl p-6 ${
+                plan.popular
+                  ? "bg-gradient-to-b from-violet-600/20 to-transparent border-2 border-violet-500/50 lg:scale-105"
+                  : "glass"
+              }`}
+            >
+              {plan.popular && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                  <span className="px-4 py-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full text-sm font-medium whitespace-nowrap">
+                    Популярный
+                  </span>
+                </div>
+              )}
+              <div className="mb-5">
+                <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
+                <p className="text-zinc-500 text-sm">{plan.description}</p>
+              </div>
+              <div className="mb-6">
+                {plan.monthlyPrice === 0 ? (
+                  <div>
+                    <span className="text-3xl font-bold">По запросу</span>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-4xl font-bold">
+                        {formatPrice(isYearly ? plan.yearlyPrice : plan.monthlyPrice)}
+                      </span>
+                      <span className="text-zinc-500">₸/мес</span>
+                    </div>
+                    {isYearly && (
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-sm text-zinc-600 line-through">
+                          {formatPrice(plan.monthlyPrice)} ₸
+                        </span>
+                        <span className="text-xs text-green-400">экономия {formatPrice((plan.monthlyPrice - plan.yearlyPrice) * 12)} ₸/год</span>
+                      </div>
+                    )}
+                    {!isYearly && (
+                      <p className="text-xs text-zinc-600 mt-1">
+                        или {formatPrice(plan.yearlyPrice)} ₸/мес при оплате за год
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+              <ul className="space-y-3 mb-6">
+                {plan.features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-3 text-sm">
+                    <svg className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-zinc-300">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="#demo"
+                className={`block w-full py-3 rounded-xl text-center font-medium transition-all ${
+                  plan.popular
+                    ? "bg-gradient-to-r from-violet-600 to-indigo-600 hover:shadow-lg hover:shadow-violet-500/25"
+                    : "bg-zinc-800 hover:bg-zinc-700"
+                }`}
+              >
+                {plan.monthlyPrice === 0 ? "Связаться" : "Начать бесплатно"}
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-center text-zinc-600 text-sm mt-8"
+        >
+          Все цены указаны без НДС. При годовой оплате — скидка 25%.
+        </motion.p>
+      </div>
+    </section>
+  );
+}
 
 export default function Home() {
   return (
@@ -480,122 +690,7 @@ export default function Home() {
       </section>
 
       {/* Pricing */}
-      <section id="тарифы" className="py-32 px-6">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-20"
-          >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-sm mb-6">
-              Тарифы
-            </span>
-            <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-              Прозрачное{" "}
-              <span className="gradient-text">ценообразование</span>
-            </h2>
-            <p className="text-xl text-zinc-500">
-              14 дней бесплатно. Отмена в любой момент.
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {[
-              {
-                name: "Starter",
-                price: "9 900",
-                description: "Для малого бизнеса",
-                features: [
-                  "До 500 клиентов",
-                  "Бонусная система",
-                  "1 локация",
-                  "Email поддержка",
-                  "Базовая аналитика",
-                ],
-                popular: false,
-              },
-              {
-                name: "Business",
-                price: "29 900",
-                description: "Самый популярный",
-                features: [
-                  "До 5 000 клиентов",
-                  "RFM-аналитика",
-                  "WhatsApp рассылки",
-                  "До 5 локаций",
-                  "Приоритетная поддержка",
-                  "API доступ",
-                ],
-                popular: true,
-              },
-              {
-                name: "Enterprise",
-                price: "По запросу",
-                description: "Для сетей и франшиз",
-                features: [
-                  "Безлимит клиентов",
-                  "Безлимит локаций",
-                  "White-label",
-                  "Персональный менеджер",
-                  "Custom интеграции",
-                  "SLA 99.9%",
-                ],
-                popular: false,
-              },
-            ].map((plan, i) => (
-              <motion.div
-                key={plan.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className={`relative rounded-3xl p-8 ${
-                  plan.popular
-                    ? "bg-gradient-to-b from-violet-600/20 to-transparent border-2 border-violet-500/50"
-                    : "glass"
-                }`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="px-4 py-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full text-sm font-medium">
-                      Популярный
-                    </span>
-                  </div>
-                )}
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
-                  <p className="text-zinc-500 text-sm">{plan.description}</p>
-                </div>
-                <div className="mb-6">
-                  <span className="text-4xl font-bold">{plan.price}</span>
-                  {plan.price !== "По запросу" && <span className="text-zinc-500"> ₸/мес</span>}
-                </div>
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-3 text-sm">
-                      <svg className="w-5 h-5 text-violet-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="text-zinc-300">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href="#demo"
-                  className={`block w-full py-3.5 rounded-xl text-center font-medium transition-all ${
-                    plan.popular
-                      ? "bg-gradient-to-r from-violet-600 to-indigo-600 hover:shadow-lg hover:shadow-violet-500/25"
-                      : "bg-zinc-800 hover:bg-zinc-700"
-                  }`}
-                >
-                  {plan.price === "По запросу" ? "Связаться" : "Начать бесплатно"}
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <PricingSection />
 
       {/* Testimonials */}
       <section id="кейсы" className="py-32 px-6">
