@@ -418,7 +418,7 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* POS Integration card */}
+            {/* Multilanguage card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -428,21 +428,19 @@ export default function Home() {
             >
               <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl transition-all group-hover:bg-indigo-500/20" />
               <div className="relative flex flex-col md:flex-row md:items-center gap-6">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-                  </svg>
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0 text-2xl">
+                  🌍
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Интеграция с кассами</h3>
+                  <h3 className="text-xl font-bold mb-2">Мультиязычность</h3>
                   <p className="text-zinc-400">
-                    Автоматическое начисление бонусов при оплате. Поддержка Poster, iiko, R-Keeper и других POS-систем.
+                    Приложение на языке ваших клиентов. Поддержка казахского, русского, английского и других языков.
                   </p>
                 </div>
                 <div className="flex gap-3 flex-wrap md:ml-auto">
-                  {["Poster", "iiko", "R-Keeper"].map((pos) => (
-                    <span key={pos} className="px-3 py-1.5 bg-zinc-800 rounded-lg text-sm text-zinc-400">
-                      {pos}
+                  {["Қазақша", "Русский", "English"].map((lang) => (
+                    <span key={lang} className="px-3 py-1.5 bg-zinc-800 rounded-lg text-sm text-zinc-400">
+                      {lang}
                     </span>
                   ))}
                 </div>
