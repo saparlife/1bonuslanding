@@ -18,73 +18,32 @@ const stagger = {
   }
 };
 
-const plans = [
-  {
-    name: "Starter",
-    monthlyPrice: 19900,
-    yearlyPrice: 14900,
-    description: "Для микробизнеса",
-    features: [
-      "До 500 клиентов",
-      "Бонусная система",
-      "1 локация",
-      "Базовая аналитика",
-      "Email поддержка",
-    ],
-    popular: false,
-  },
-  {
-    name: "Growth",
-    monthlyPrice: 49900,
-    yearlyPrice: 37400,
-    description: "Для малого бизнеса",
-    features: [
-      "До 3 000 клиентов",
-      "WhatsApp рассылки",
-      "Бонусы на день рождения",
-      "3 локации",
-      "Приоритетная поддержка",
-    ],
-    popular: false,
-  },
-  {
-    name: "Business",
-    monthlyPrice: 99900,
-    yearlyPrice: 74900,
-    description: "Самый популярный",
-    features: [
-      "До 15 000 клиентов",
-      "RFM-аналитика с AI",
-      "WhatsApp + авторассылки",
-      "До 10 локаций",
-      "API доступ",
-      "Персональный менеджер",
-    ],
-    popular: true,
-  },
-  {
-    name: "Enterprise",
-    monthlyPrice: 0,
-    yearlyPrice: 0,
-    description: "Для сетей и франшиз",
-    features: [
-      "Безлимит клиентов",
-      "Безлимит локаций",
-      "White-label решение",
-      "Custom интеграции",
-      "SLA 99.9%",
-      "Выделенная поддержка 24/7",
-    ],
-    popular: false,
-  },
+const pricingOptions = [
+  { period: "quarter", label: "Квартал", price: 99000, discount: null, months: 3 },
+  { period: "half", label: "Полгода", price: 179000, discount: 10, months: 6 },
+  { period: "year", label: "Год", price: 320000, discount: 20, months: 12 },
+];
+
+const features = [
+  "Бонусная система",
+  "Штампики",
+  "Мобильное приложение",
+  "1 локация",
+  "Аналитика",
+  "Авторассылка",
+  "Массовая рассылка",
+  "RFM Аналитика",
 ];
 
 function PricingSection() {
-  const [isYearly, setIsYearly] = useState(true);
+  const [selectedPeriod, setSelectedPeriod] = useState("quarter");
 
   const formatPrice = (price: number) => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   };
+
+  const selectedOption = pricingOptions.find(o => o.period === selectedPeriod)!;
+  const pricePerMonth = Math.round(selectedOption.price / selectedOption.months);
 
   return (
     <section id="тарифы" className="py-32 px-6">
@@ -96,122 +55,99 @@ function PricingSection() {
           className="text-center mb-12"
         >
           <span className="inline-block px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-sm mb-6">
-            Тарифы
+            Тариф
           </span>
           <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-            Прозрачное{" "}
+            Простое{" "}
             <span className="gradient-text">ценообразование</span>
           </h2>
           <p className="text-xl text-zinc-500 mb-10">
-            14 дней бесплатно. Отмена в любой момент.
+            Всё включено. Выберите удобный период оплаты.
           </p>
-
-          {/* Billing Toggle */}
-          <div className="flex items-center justify-center gap-4">
-            <span className={`text-sm transition-colors ${!isYearly ? "text-white" : "text-zinc-500"}`}>
-              Помесячно
-            </span>
-            <button
-              onClick={() => setIsYearly(!isYearly)}
-              className="relative w-16 h-8 rounded-full bg-zinc-800 transition-colors hover:bg-zinc-700"
-            >
-              <motion.div
-                className="absolute top-1 w-6 h-6 rounded-full bg-gradient-to-r from-violet-500 to-indigo-500"
-                animate={{ left: isYearly ? "calc(100% - 28px)" : "4px" }}
-                transition={{ type: "spring", stiffness: 500, damping: 30 }}
-              />
-            </button>
-            <span className={`text-sm transition-colors ${isYearly ? "text-white" : "text-zinc-500"}`}>
-              Годовой
-            </span>
-            {isYearly && (
-              <motion.span
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="px-3 py-1 bg-green-500/20 text-green-400 text-sm font-medium rounded-full"
-              >
-                -25%
-              </motion.span>
-            )}
-          </div>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {plans.map((plan, i) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className={`relative rounded-3xl p-6 ${
-                plan.popular
-                  ? "bg-gradient-to-b from-violet-600/20 to-transparent border-2 border-violet-500/50 lg:scale-105"
-                  : "glass"
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="px-4 py-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full text-sm font-medium whitespace-nowrap">
-                    Популярный
+        <div className="max-w-lg mx-auto">
+          {/* Period Toggle */}
+          <div className="flex justify-center mb-8">
+            <div className="inline-flex p-1.5 bg-zinc-800/50 rounded-2xl gap-1">
+              {pricingOptions.map((option) => (
+                <button
+                  key={option.period}
+                  onClick={() => setSelectedPeriod(option.period)}
+                  className={`relative px-6 py-3 rounded-xl text-sm font-medium transition-all ${
+                    selectedPeriod === option.period
+                      ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  {option.label}
+                  {option.discount && (
+                    <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
+                      selectedPeriod === option.period
+                        ? "bg-white/20 text-white"
+                        : "bg-green-500/20 text-green-400"
+                    }`}>
+                      -{option.discount}%
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Pricing Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative rounded-3xl p-8 bg-gradient-to-b from-violet-600/20 to-transparent border-2 border-violet-500/50"
+          >
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+              <span className="px-4 py-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full text-sm font-medium whitespace-nowrap">
+                Полный доступ
+              </span>
+            </div>
+
+            <div className="text-center mb-8">
+              <div className="mb-4">
+                <motion.div
+                  key={selectedPeriod}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex items-baseline justify-center gap-2"
+                >
+                  <span className="text-5xl sm:text-6xl font-bold">
+                    {formatPrice(selectedOption.price)}
                   </span>
+                  <span className="text-zinc-500 text-xl">₸</span>
+                </motion.div>
+                <p className="text-zinc-400 mt-2">
+                  за {selectedOption.label.toLowerCase()} ({formatPrice(pricePerMonth)} ₸/мес)
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 mb-8">
+              {features.map((feature) => (
+                <div key={feature} className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-violet-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-zinc-300 text-sm">{feature}</span>
                 </div>
-              )}
-              <div className="mb-5">
-                <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
-                <p className="text-zinc-500 text-sm">{plan.description}</p>
-              </div>
-              <div className="mb-6">
-                {plan.monthlyPrice === 0 ? (
-                  <div>
-                    <span className="text-3xl font-bold">По запросу</span>
-                  </div>
-                ) : (
-                  <div>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-4xl font-bold">
-                        {formatPrice(isYearly ? plan.yearlyPrice : plan.monthlyPrice)}
-                      </span>
-                      <span className="text-zinc-500">₸/мес</span>
-                    </div>
-                    {isYearly && (
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-sm text-zinc-600 line-through">
-                          {formatPrice(plan.monthlyPrice)} ₸
-                        </span>
-                        <span className="text-xs text-green-400">экономия {formatPrice((plan.monthlyPrice - plan.yearlyPrice) * 12)} ₸/год</span>
-                      </div>
-                    )}
-                    {!isYearly && (
-                      <p className="text-xs text-zinc-600 mt-1">
-                        или {formatPrice(plan.yearlyPrice)} ₸/мес при оплате за год
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-              <ul className="space-y-3 mb-6">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3 text-sm">
-                    <svg className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span className="text-zinc-300">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="#demo"
-                className={`block w-full py-3 rounded-xl text-center font-medium transition-all ${
-                  plan.popular
-                    ? "bg-gradient-to-r from-violet-600 to-indigo-600 hover:shadow-lg hover:shadow-violet-500/25"
-                    : "bg-zinc-800 hover:bg-zinc-700"
-                }`}
-              >
-                {plan.monthlyPrice === 0 ? "Связаться" : "Начать бесплатно"}
-              </Link>
-            </motion.div>
-          ))}
+              ))}
+            </div>
+
+            <Link
+              href="#demo"
+              className="block w-full py-4 rounded-xl text-center font-semibold text-lg bg-gradient-to-r from-violet-600 to-indigo-600 hover:shadow-lg hover:shadow-violet-500/25 transition-all"
+            >
+              Начать бесплатно
+            </Link>
+            <p className="text-center text-zinc-500 text-sm mt-4">
+              14 дней бесплатный пробный период
+            </p>
+          </motion.div>
         </div>
 
         <motion.p
@@ -220,7 +156,7 @@ function PricingSection() {
           viewport={{ once: true }}
           className="text-center text-zinc-600 text-sm mt-8"
         >
-          Все цены указаны без НДС. При годовой оплате — скидка 25%.
+          Все цены указаны без НДС
         </motion.p>
       </div>
     </section>
